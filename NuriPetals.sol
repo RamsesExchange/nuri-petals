@@ -105,10 +105,7 @@ contract NuriPetals is ERC20("Nuri Petals", "PTL") {
     ///@notice returns a boolean if the "from" address in a transfer is WL'd
     function isAllowed(address _wallet) public view returns (bool) {
         if (!allowed[_wallet] && _wallet != address(0)) {
-            if (
-                voter.isGauge(_wallet) ||
-                voter.feeDistributors(_wallet) == _wallet
-            ) return true;
+            if (voter.isGauge(_wallet)) return true;
             return false;
         }
         return true;
