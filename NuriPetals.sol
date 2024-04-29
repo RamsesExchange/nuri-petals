@@ -14,6 +14,7 @@ error NotWarden();
 error NotAllowed();
 error ConversionsDisabled();
 error InsufficientBalance();
+error Zero();
 
 contract NuriPetals is ERC20("Nuri Petals", "PTL") {
     address public warden;
@@ -102,6 +103,7 @@ contract NuriPetals is ERC20("Nuri Petals", "PTL") {
 
     ///@notice after the Nuri token is live, users can convert Nuri Petals to Nuri Tokens
     function convert(uint256 _amount) external {
+        if(!(_amount > 0)) revert Zero();
         if (!conversions) revert ConversionsDisabled();
         if (!(balanceOf(msg.sender) >= _amount)) revert InsufficientBalance();
         _burn(msg.sender, _amount);
