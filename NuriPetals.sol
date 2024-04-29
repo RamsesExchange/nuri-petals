@@ -97,7 +97,7 @@ contract NuriPetals is ERC20("Nuri Petals", "PTL") {
         if (!conversions) revert ConversionsDisabled();
         if (!(balanceOf(msg.sender) >= _amount)) revert InsufficientBalance();
         _burn(msg.sender, _amount);
-        Nuri.transfer(msg.sender, _amount);
+        Nuri.transfer(msg.sender, getConversionOf(_amount));
         convertedAmount[msg.sender] += _amount;
         emit Converted(msg.sender, _amount);
     }
