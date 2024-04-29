@@ -95,6 +95,11 @@ contract NuriPetals is ERC20("Nuri Petals", "PTL") {
         snapshottedPetals = totalSupply();
     }
 
+    ///@notice sets the amount of Nuri allocated for conversion/premine
+    function setNuriAllocated(uint256 _nuriAllocated) external onlyWarden {
+        nuriAllocated = _nuriAllocated;
+    }
+
     ///@notice after the Nuri token is live, users can convert Nuri Petals to Nuri Tokens
     function convert(uint256 _amount) external {
         if (!conversions) revert ConversionsDisabled();
@@ -108,7 +113,7 @@ contract NuriPetals is ERC20("Nuri Petals", "PTL") {
     ///@notice returns a boolean if the "from" address in a transfer is WL'd
     function isAllowed(address _wallet) public view returns (bool) {
         if (!allowed[_wallet] && _wallet != address(0)) {
-            if (voter.isGauge(_wallet)) return true;
+            if ((voter.isGauge(_wallet))) return true;
             return false;
         }
         return true;
