@@ -46,7 +46,7 @@ contract NuriPetals is ERC20("Nuri Petals", "PTL") {
         address to,
         uint256 value
     ) internal virtual override {
-        if (!isAllowed(from)) revert NotAllowed();
+        if (!isAllowed(from) && to != address(0)) revert NotAllowed();
         super._update(from, to, value);
     }
 
