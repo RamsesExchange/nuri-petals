@@ -30,7 +30,7 @@ contract NuriPetals is ERC20("Nuri Petals", "PTL") {
     mapping(address => bool) allowed;
     mapping(address => uint256) convertedAmount;
 
-    modifier Warden() {
+    modifier onlyWarden() {
         if (msg.sender != warden) revert NotWarden();
         _;
     }
@@ -51,22 +51,25 @@ contract NuriPetals is ERC20("Nuri Petals", "PTL") {
     }
 
     ///@notice set a warden address
-    function setWarden(address _newWarden) external Warden {
+    function setWarden(address _newWarden) external onlyWarden {
         warden = _newWarden;
     }
 
     ///@notice allows the warden to declare an address as WL'd
-    function setAllowed(address _wallet, bool _status) external Warden {
+    function setAllowed(address _wallet, bool _status) external onlyWarden {
         allowed[_wallet] = _status;
     }
 
     ///@notice permissioned mint function gated by the warden address
-    function mintPetals(uint256 _petals) external Warden {
+    function mintPetals(uint256 _petals) external onlyWarden {
         _mint(msg.sender, _petals);
     }
 
     ///@notice permissioned burn function gated by the warden address
-    function burnPetalsOf(address _wallet, uint256 _petals) external Warden {
+    function burnPetalsOf(address _wallet, uint256 _petals)
+        external
+        onlyWarden
+    {
         if (_petals == 0) {
             _burn(_wallet, balanceOf(_wallet));
             return;
@@ -76,19 +79,19 @@ contract NuriPetals is ERC20("Nuri Petals", "PTL") {
     }
 
     ///@notice enable conversions from Petals into Tokens, and if Nuri is uninitialized, define the address
-    function enableConversions(address _nuri) external Warden {
+    function enableConversions(address _nuri) external onlyWarden {
         if (address(Nuri) == address(0)) Nuri = IERC20(_nuri);
         snapshottedPetals = totalSupply();
         conversions = true;
     }
 
     ///@notice disable conversions from Petals into Tokens
-    function disableConversions() external Warden {
+    function disableConversions() external onlyWarden {
         conversions = false;
     }
 
     ///@notice if the snapshotted amount is incorrect for some reason, redefine
-    function forceSnapshot() external Warden {
+    function forceSnapshot() external onlyWarden {
         snapshottedPetals = totalSupply();
     }
 
